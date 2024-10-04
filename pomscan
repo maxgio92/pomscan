@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+set -uo pipefail
+
+DEP_FILENAME="${DEPFILE:-pom.xml}"
+PROJECT_PATH="${1:-.}"
+REPORT_FILE="${2:-$REPORT_FILE}"
+
+dep_prefix="<artifactId>"
+dep_suffix="</artifactId>"
+version_prefix="<version>"
+version_suffix="</version>"
+
+main() {
+	deps="$(grep 📦 ${REPORT_FILE} | cut -d '📦' -f2 | cut -d ' ' -f2)"
+	for dep in $deps; do
+		echo ------------------------------------------------------------
+		echo "Looking for dep ${dep}:"
+		found="$(find $PROJECT_PATH -type f -name $DEP_FILENAME -exec grep -l ${dep} {} \;)"
+		if [ -n "${found}" ]; then
+			for file in $found; do
+				version_match="$(grep -A1 ${dep} ${file} | grep ${version_suffix})"
+				if [ -n "${version_match}" ]; then
+					echo -n "- ${file}: "
+	
+					version="${version_match//${version_prefix}}"
+					version="${version//$version_suffix}"
+					version="${version//\ }"
+	
+					# The version contains a variable.
+					if [[ ${version} =~ ^\$\{.+\}$ ]]; then
+						local var=$version
+						var="${version//\$\{}"
+						var="${var//\}}"
+
+						# Looking for the value of the variable.
+						var_match=$(grep -E "<${var}>.+</${var}>" $file)
+						version=${var_match//<$var>}
+						version=${version//<\/$var>}
+
+						# Variable declared in parent deps file.
+						if [ -z "${var_match}" ]; then
+							# Fallback to parent deps files.
+							found=$(find $PROJECT_PATH -type f -name $DEP_FILENAME -exec grep -l -E "<${var}>.+</${var}>" {} \;)
+							echo "parent variables lookup:"
+
+							# If the variable has been declared at least in another deps file.
+							if [ -n "${found}" ]; then
+								for file in $found; do
+									echo -n "  - ${file}: "
+									
+									var_match=$(grep -E "<${var}>.+</${var}>" $file)
+									version=${var_match//<$var>}
+									version=${version//<\/$var>}
+									echo $version
+								done
+							fi
+						fi
+					fi
+					echo $version
+				fi	       
+			done
+		else
+			echo "Dependency not found in ${DEP_FILENAME} files"
+		fi
+	done
+}
+
+main $@
