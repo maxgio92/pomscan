@@ -9,14 +9,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-const (
-	PomFile = "pom.xml"
-)
-
-var (
-	ErrDepNotFound = errors.New("dependency not found")
-)
-
 type Artifact struct {
 	GroupId    string `xml:"groupId"`
 	ArtifactId string `xml:"artifactId"`
@@ -30,8 +22,8 @@ type Project struct {
 	Description string   `xml:"description"`
 	Artifact
 	Dependencies []Artifact `xml:"dependencies>dependency"`
-	depCache map[string]*Artifact
-	lock     sync.RWMutex
+	depCache     map[string]*Artifact
+	lock         sync.RWMutex
 }
 
 func NewPom(pathname string) (*Project, error) {
@@ -59,10 +51,12 @@ func NewPom(pathname string) (*Project, error) {
 
 func (p *Project) Dep(groupId, artifactId string) (*Artifact, error) {
 	p.lock.RLock()
+
 	dep, ok := p.depCache[fmt.Sprintf("%s.%s", groupId, artifactId)]
 	p.lock.RUnlock()
 	if ok {
 		return dep, nil
 	}
+
 	return nil, ErrDepNotFound
 }
