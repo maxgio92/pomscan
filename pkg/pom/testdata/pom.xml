@@ -4,6 +4,9 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>My Project</name>
 	<description>A simple Maven project</description>
+	<properties>
+		<bar.version>1.0.2</bar.version>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.foo</groupId>
@@ -13,7 +16,7 @@
 		<dependency>
 			<groupId>org.apache.bar</groupId>
 			<artifactId>bar</artifactId>
-			<version>1.0.2</version>
+			<version>${bar.version}</version>
 		</dependency>
 	</dependencies>
 </project>

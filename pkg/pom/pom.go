@@ -21,17 +21,23 @@ type Project struct {
 	Name        string   `xml:"name"`
 	Description string   `xml:"description"`
 	Artifact
-	Dependencies []Artifact `xml:"dependencies>dependency"`
+	Properties   map[string]string `xml:"properties"`
+	Dependencies []Artifact        `xml:"dependencies>dependency"`
 	depCache     map[string]*Artifact
 	lock         sync.RWMutex
 }
 
+type Properties struct {
+	XMLName xml.Name          `xml:"properties"`
+	Content map[string]string `xml:",any"`
+}
+
 func NewPom(pathname string) (*Project, error) {
 	file, err := os.Open(pathname)
-	if err != nil {
-		fmt.Println("error opening file:", err)
-	}
 	defer file.Close()
+	if err != nil {
+		return nil, errors.Wrap(err, "opening project")
+	}
 
 	var pom Project
 	decoder := xml.NewDecoder(file)
