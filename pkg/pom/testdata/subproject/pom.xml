@@ -1,5 +1,5 @@
 <project>
-	<groupId>com.example</groupId>
+	<groupId>com.example.my-sub-project</groupId>
 	<artifactId>my-sub-project</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name>My Sub Project</name>
