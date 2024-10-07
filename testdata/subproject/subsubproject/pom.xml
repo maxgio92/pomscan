@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>org.example.bar</groupId>
 			<artifactId>bar</artifactId>
-			<version>1.0.2</version>
+			<version>${bars.version}</version>
 		</dependency>
 	</dependencies>
 </project>
