@@ -1,19 +1,22 @@
 <project>
-	<groupId>com.example.my-sub-sub-project</groupId>
-	<artifactId>my-sub-sub-project</artifactId>
+	<groupId>com.example.my-project</groupId>
+	<artifactId>my-project</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<name>My Sub Sub Project</name>
+	<name>My Project</name>
 	<description>A simple Maven project</description>
+	<properties>
+		<bar.version>1.0.2</bar.version>
+	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.foo</groupId>
+			<groupId>org.example.foo</groupId>
 			<artifactId>foo</artifactId>
 			<version>1.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.bar</groupId>
+			<groupId>org.example.bar</groupId>
 			<artifactId>bar</artifactId>
-			<version>1.0.2</version>
+			<version>${bar.version}</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -6,12 +6,12 @@
 	<description>A simple Maven project</description>
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.foo</groupId>
+			<groupId>org.example.foo</groupId>
 			<artifactId>foo</artifactId>
 			<version>1.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.bar</groupId>
+			<groupId>org.example.bar</groupId>
 			<artifactId>bar</artifactId>
 			<version>1.0.2</version>
 		</dependency>
