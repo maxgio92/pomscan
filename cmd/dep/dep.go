@@ -130,40 +130,114 @@ func (o *Options) resolveVersionProperty(dep *gopom.Dependency, poms []*gopom.Pr
 	if len(matches) == 0 {
 		return nil
 	}
+	if len(matches[0]) == 0 {
+		return nil
+	}
 
+	prop := matches[0][1]
+	value, err := o.resolvePropertyFromPoms(poms, prop)
+	if err != nil {
+		return err
+	}
+	if value == nil {
+		return errors.New("dependency version not found")
+	}
+	dep.Version = *value
+
+	return nil
+}
+
+func (o *Options) resolvePropertyFromPoms(poms []*gopom.Project, prop string) (*string, error) {
+	var value *string
+
+	// Search the property across all POMs.
 	for _, pom := range poms {
 		pom := pom
 		o.Logger.Debug().Msg("resolve version")
-		if len(matches[0]) == 0 {
-			continue
-		}
 
-		prop := matches[0][1]
-
+		// Fallback to profile properties.
 		if pom.Properties == nil {
-			continue
-		}
-		if pom.Properties.Entries == nil {
-			continue
-		}
-
-		value, ok := pom.Properties.Entries[prop]
-		if !ok {
-			continue
-		}
-		if value != "" {
-			dep.Version = value
-			o.Logger.Info().Str("project", pom.Name).Str("property", prop).Msg("resolved version")
-
-			// TODO: pick the parent POM instead of the first match.
+			var err error
+			value, err = o.resolvePropertyFromProfiles(poms, prop)
+			if err != nil || value == nil {
+				o.Logger.Debug().Err(err).Str("project", pom.Name).Str("property", prop).Msg("resolve version from profiles")
+				continue
+			}
 			break
 		}
-	}
-	if dep.Version == "" {
-		return errors.New("dependency version not found")
+		if pom.Properties.Entries == nil {
+			var err error
+			value, err = o.resolvePropertyFromProfiles(poms, prop)
+			if err != nil || value == nil {
+				o.Logger.Debug().Err(err).Str("project", pom.Name).Str("property", prop).Msg("resolve version from profiles")
+				continue
+			}
+			break
+		}
+
+		var err error
+		value, err = resolvePropertyFromProperties(pom.Properties.Entries, prop)
+		if err != nil || value == nil {
+			o.Logger.Debug().Err(err).Str("project", pom.Name).Str("property", prop).Msg("resolve version")
+			continue
+		}
+		o.Logger.Info().Str("project", pom.Name).Str("property", prop).Msg("resolved version from property")
+		// TODO: pick the parent POM instead of the first match.
+		break
 	}
 
-	return nil
+	return value, nil
+}
+
+func (o *Options) resolvePropertyFromProfiles(poms []*gopom.Project, prop string) (*string, error) {
+	var value *string
+nextPom:
+	for _, pom := range poms {
+		pom := pom
+		if pom.Profiles == nil {
+			continue
+		}
+		for _, profile := range *pom.Profiles {
+			if profile.Properties == nil {
+				continue
+			}
+			if profile.Properties.Entries == nil {
+				continue
+			}
+
+			var err error
+			value, err = resolvePropertyFromProperties(profile.Properties.Entries, prop)
+			if err != nil {
+				o.Logger.Debug().Err(err).Str("project", pom.Name).Str("profile", profile.ID).Str("property", prop).Msg("resolve version from profiles")
+				continue
+			}
+			if value != nil {
+				o.Logger.Info().Str("project", pom.Name).Str("profile", profile.ID).Str("property", prop).Msg("resolved version from profile property")
+				// TODO: pick the default profile instead of the first match.
+				break nextPom
+			}
+		}
+	}
+	if value == nil {
+		return nil, errors.New("property not found in profiles")
+	}
+
+	return value, nil
+}
+
+func resolvePropertyFromProperties(entries map[string]string, property string) (*string, error) {
+	if entries == nil {
+		return nil, errors.New("entries is empty")
+	}
+	value, ok := entries[property]
+	if !ok {
+		return nil, errors.New("property not found")
+	}
+	if value == "" {
+		return nil, errors.New("value is empty")
+	}
+
+	return &value, nil
 }
 
 func (o *Options) printDep(dep *gopom.Dependency, pomPath string) {

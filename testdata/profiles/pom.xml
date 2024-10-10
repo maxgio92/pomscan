@@ -1,0 +1,45 @@
+<project>
+  <parent>
+    <artifactId>myproject-main</artifactId>
+    <groupId>org.example.myproject</groupId>
+    <version>1.2.3</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>myproject-core</artifactId>
+  <version>4.5.6</version>
+  <name>My Project Core</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${my-compatible-guava.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <properties>
+        <my-compatible-guava.version>1.9.3</my-compatible-guava.version>
+      </properties>
+      <activation>
+        <property>
+          <name>!my.profile</name>
+        </property>
+      </activation>
+    </profile>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <my-compatible-guava.version>2.0.0-alpha1</my-compatible-guava.version>
+      </properties>
+      <activation>
+        <property>
+          <name>!my.profile</name>
+        </property>
+      </activation>
+    </profile>
+  </profiles>
+</project>
