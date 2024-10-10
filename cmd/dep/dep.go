@@ -140,6 +140,13 @@ func (o *Options) resolveVersionProperty(dep *gopom.Dependency, poms []*gopom.Pr
 
 		prop := matches[0][1]
 
+		if pom.Properties == nil {
+			continue
+		}
+		if pom.Properties.Entries == nil {
+			continue
+		}
+
 		value, ok := pom.Properties.Entries[prop]
 		if !ok {
 			continue
