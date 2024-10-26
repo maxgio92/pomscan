@@ -53,10 +53,10 @@ func (p *Project) Load() error {
 
 func (p *Project) SearchDepInDepMgmtSec(groupID, artifactID string) (*gopom.Dependency, error) {
 	if p.DependencyManagement == nil {
-		return nil, errors.New("pom dependency management is empty")
+		return nil, ErrPomDepMgmtEmpty
 	}
 	if p.DependencyManagement.Dependencies == nil {
-		return nil, errors.New("pom dependency management' dependency list is empty")
+		return nil, ErrPomDepMgmtEmpty
 	}
 	for _, dep := range *p.DependencyManagement.Dependencies {
 		if (groupID == "" && dep.ArtifactID == artifactID) ||
@@ -67,5 +67,5 @@ func (p *Project) SearchDepInDepMgmtSec(groupID, artifactID string) (*gopom.Depe
 		}
 	}
 
-	return nil, errors.New("dependency not found")
+	return nil, ErrDepNotFound
 }

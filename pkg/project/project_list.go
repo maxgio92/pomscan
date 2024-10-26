@@ -114,6 +114,7 @@ func (list *ProjectList) SearchDirectDependency(artifactID, groupID string) ([]*
 			}
 		}
 
+		// Resolve dependency version.
 		prop, err := list.ResolveDepVersionProp(dep)
 		if err != nil {
 			list.logger.Debug().Err(err).Str("pom", project.pomPath).Msg("resolve version")
