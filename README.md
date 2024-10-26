@@ -1,6 +1,8 @@
-## Pomscan
+# Pomscan
 
 **Scan POM files**
+
+## Usage
 
 ```
 Usage:
@@ -90,3 +92,27 @@ version-property-name : guava.version
 version-property-value : 22.0
 version-property-declare-path : pom.xml
 ```
+
+## Usage with bumps
+
+### With [`pombump`](https://github.com/chainguard-dev/pombump)
+
+It can be really useful when preparing patches, for example with [`pombump`](https://github.com/chainguard-dev/pombump).
+
+Consider that from the previous example we want to bump `com.google.guava.guava` to the version *24.1.1-jre* because both *22.0* and *16.0.1* both contain CVEs, we now know thanks to `pomscan` that we need to change the following version properties:
+* `guava.version` in the root project's `pom.xml`
+* `druid.guava-version` in the Druid Handler project's `druid-handler/pom.xml`
+
+So, we can run `pombump` to update the `pom.xml` files accordingly, and we feeed it with the information retrieved from `pomscan`, like below:
+
+```shell
+$ pombump --properties="guava.version@24.1.1-jre" pom.xml >pom.bumps.xml
+...
+2024/10/26 13:04:54 INFO Patching property: guava.version from 22.0 to 24.1.1-jre
+$ pombump --properties="druid.guava.version@24.1.1-jre" druid-handler/pom.xml >druid-handler/pom.bumps.xml
+...
+2024/10/26 13:06:05 INFO Patching property: druid.guava.version from 16.0.1 to 24.1.1-jre
+```
+
+We now have the new POMs updated at `pom.bumps.xml` and `druid-handler/pom.bumps.xml`, that will set the new version for all the occurrences of the `com.google.guava.guava` artifact across all the direct dependencies of the Maven project and subprojects.
+
