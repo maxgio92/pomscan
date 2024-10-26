@@ -12,7 +12,8 @@ import (
 	"github.com/spf13/cobra"
 	"k8s.io/kubectl/pkg/cmd/util"
 
-	"github.com/maxgio92/pomscan/cmd/dep"
+	"github.com/maxgio92/pomscan/cmd/dependency"
+	"github.com/maxgio92/pomscan/cmd/plugin"
 	"github.com/maxgio92/pomscan/internal/options"
 )
 
@@ -31,7 +32,8 @@ func NewRootCommand(opts *options.CommonOptions) *cobra.Command {
 		DisableAutoGenTag: true,
 	}
 
-	cmd.AddCommand(dep.NewDepCmd(opts))
+	cmd.AddCommand(dependency.NewDepCmd(opts))
+	cmd.AddCommand(plugin.NewPluginCmd(opts))
 	opts.AddFlags(cmd.PersistentFlags())
 	cmd.PersistentFlags().BoolVar(&opts.Debug, "debug", false, "Sets log level to debug")
 

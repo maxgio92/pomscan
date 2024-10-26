@@ -1,13 +1,13 @@
-package dep
+package plugin
 
 import (
+	"github.com/maxgio92/pomscan/internal/output"
 	"github.com/pkg/errors"
 	log "github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 
 	"github.com/maxgio92/pomscan/internal/files"
 	"github.com/maxgio92/pomscan/internal/options"
-	"github.com/maxgio92/pomscan/internal/output"
 	"github.com/maxgio92/pomscan/pkg/project"
 )
 
@@ -25,12 +25,12 @@ type Options struct {
 	*options.CommonOptions
 }
 
-func NewDepCmd(opts *options.CommonOptions) *cobra.Command {
+func NewPluginCmd(opts *options.CommonOptions) *cobra.Command {
 	o := &Options{"", "", false, opts}
 
 	cmd := &cobra.Command{
-		Use:   "dep",
-		Short: "Get info about a dependency",
+		Use:   "plugin",
+		Short: "Search an artifact through the plugins across the project hierarchy.",
 		RunE:  o.Run,
 	}
 
@@ -62,13 +62,13 @@ func (o *Options) Run(_ *cobra.Command, _ []string) error {
 		return errors.Wrap(err, "loading projects")
 	}
 
-	deps, err := projectList.SearchDirectDependency(o.ArtifactID, o.GroupID)
+	plugins, err := projectList.SearchPlugins(o.ArtifactID, o.GroupID)
 	if err != nil {
 		return errors.Wrap(err, "searching direct dependency")
 	}
 
-	for _, dep := range deps {
-		output.PrintDep(dep, o.VersionOnly)
+	for _, plugin := range plugins {
+		output.PrintPlugin(plugin, o.VersionOnly)
 	}
 
 	return nil

@@ -41,3 +41,25 @@ func PrintDep(dep *project.Dependency, versionOnly bool) {
 	}
 	fmt.Println()
 }
+
+func PrintPlugin(dep *project.Plugin, versionOnly bool) {
+	if versionOnly && dep.Version == "" {
+		return
+	}
+
+	fmt.Printf("📦 %s.%s\n", dep.GroupID, dep.ArtifactID)
+	fmt.Println(artifactID, ":", dep.ArtifactID)
+	fmt.Println(groupID, ":", dep.GroupID)
+	fmt.Println(pomFile, ":", dep.Metadata.PomPath)
+	if dep.Version != "" {
+		fmt.Println(version, ":", dep.Version)
+	}
+	if dep.Metadata.VersionProperty != nil {
+		fmt.Println(versionPropertyName, ":", dep.Metadata.VersionProperty.Name)
+		fmt.Println(versionPropertyValue, ":", dep.Metadata.VersionProperty.Value)
+		if dep.Metadata.VersionProperty.Metadata != nil {
+			fmt.Println(versionPropertyDeclarePath, ":", dep.Metadata.VersionProperty.Metadata.DeclarePath)
+		}
+	}
+	fmt.Println()
+}
