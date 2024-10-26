@@ -2,17 +2,7 @@ package project
 
 import (
 	"github.com/maxgio92/gopom"
-	"github.com/pkg/errors"
 	"regexp"
-)
-
-var (
-	ErrPropNotFoundInProfiles = errors.New("property not found in profiles")
-	ErrPropNotFound           = errors.New("property not found")
-	ErrPropValueEmpty         = errors.New("property value is empty")
-	ErrPropEntriesEmpty       = errors.New("properties entry is empty")
-	ErrDepVersionNotFound     = errors.New("dependency version not found")
-	ErrProfilesNotFound       = errors.New("profiles are not found")
 )
 
 type Property struct {
