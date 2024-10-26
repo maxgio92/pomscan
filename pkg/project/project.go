@@ -53,10 +53,10 @@ func (p *Project) Load() error {
 
 func (p *Project) SearchDepInDepMgmtSec(groupID, artifactID string) (*gopom.Dependency, error) {
 	if p.DependencyManagement == nil {
-		return nil, ErrPomDepMgmtEmpty
+		return nil, ErrDepMgmtEmpty
 	}
 	if p.DependencyManagement.Dependencies == nil {
-		return nil, ErrPomDepMgmtEmpty
+		return nil, ErrDepMgmtEmpty
 	}
 	for _, dep := range *p.DependencyManagement.Dependencies {
 		if (groupID == "" && dep.ArtifactID == artifactID) ||
