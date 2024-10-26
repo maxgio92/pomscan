@@ -1,4 +1,4 @@
-package pom
+package project
 
 import (
 	"github.com/maxgio92/gopom"
@@ -7,6 +7,7 @@ import (
 )
 
 // Project is a Maven Project, following the POM model.
+// TODO: do not export. Leave the ProjectList as the main API.
 type Project struct {
 	*gopom.Project
 	pomPath string
@@ -16,7 +17,7 @@ type Project struct {
 // TODO: provide a ProjectList.
 // This is needed to traverse a project tree to resolve properties and other.
 
-func NewProject(opts ...Option) *Project {
+func NewProject(opts ...ProjOption) *Project {
 	project := new(Project)
 	for _, f := range opts {
 		f(project)
@@ -25,15 +26,15 @@ func NewProject(opts ...Option) *Project {
 	return project
 }
 
-type Option func(*Project)
+type ProjOption func(*Project)
 
-func WithPomPath(path string) Option {
+func WithPomPath(path string) ProjOption {
 	return func(p *Project) {
 		p.pomPath = path
 	}
 }
 
-func WithLogger(logger *log.Logger) Option {
+func WithLogger(logger *log.Logger) ProjOption {
 	return func(p *Project) {
 		p.logger = logger
 	}

@@ -1,15 +1,14 @@
 package dep
 
 import (
-	"github.com/maxgio92/gopom"
-	"github.com/maxgio92/pomscan/internal/output"
-	"github.com/maxgio92/pomscan/pkg/pom"
 	"github.com/pkg/errors"
 	log "github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 
 	"github.com/maxgio92/pomscan/internal/files"
 	"github.com/maxgio92/pomscan/internal/options"
+	"github.com/maxgio92/pomscan/internal/output"
+	"github.com/maxgio92/pomscan/pkg/project"
 )
 
 const (
@@ -51,48 +50,25 @@ func (o *Options) Run(_ *cobra.Command, _ []string) error {
 
 	pomPaths, err := files.FindFiles(o.ProjectPath, pomFile)
 	if err != nil {
-		return errors.Wrap(err, "find pom files")
+		return errors.Wrap(err, "find project files")
 	}
 
-	projects := make([]*pom.Project, 0)
-	for _, pomPath := range pomPaths {
-		project := pom.NewProject(
-			pom.WithPomPath(pomPath),
-			pom.WithLogger(o.Logger),
-		)
-		err = project.Load()
-		if err != nil {
-			return errors.Wrap(err, "parsing pom")
-		}
-		projects = append(projects, project)
+	projectList := project.NewProjectList(
+		project.ListWithPomPaths(pomPaths...),
+		project.ListWithLogger(o.Logger),
+	)
+	err = projectList.LoadAll()
+	if err != nil {
+		return errors.Wrap(err, "loading projects")
 	}
 
-	for i, project := range projects {
-		var dep *gopom.Dependency
-		var err error
-		// Search in direct dependencies.
-		if o.GroupID != "" {
-			dep, err = project.Search(o.GroupID, o.ArtifactID)
-		} else {
-			dep, err = project.SearchByArtifactID(o.ArtifactID)
-		}
-		if err != nil {
-			o.Logger.Debug().Err(err).Str("pom", pomPaths[i]).Msg("search dependency")
+	deps, err := projectList.SearchDirectDependency(o.ArtifactID, o.GroupID)
+	if err != nil {
+		return errors.Wrap(err, "searching direct dependency")
+	}
 
-			// Search in inherited dependencies.
-			o.Logger.Debug().Str("project", project.Name).Msg("searching between inherited dependencies")
-			dep, err = project.SearchDepInDepMgmtSec(o.GroupID, o.ArtifactID)
-			if err != nil {
-				o.Logger.Debug().Err(err).Str("pom", pomPaths[i]).Msg("search dependency")
-				continue
-			}
-		}
-
-		if err := project.ResolveVersionProp(dep, projects); err != nil {
-			o.Logger.Debug().Err(err).Str("pom", pomPaths[i]).Msg("resolve version")
-		}
-
-		output.PrintDep(dep, pomPaths[i], o.VersionOnly)
+	for _, dep := range deps {
+		output.PrintDep(dep, o.VersionOnly)
 	}
 
 	return nil
