@@ -44,16 +44,49 @@ Global Flags:
 
 ```
 $ pomscan dep -a guava -p . --version-only
-📦 com.google.guava.guava found
-pom: ./druid-handler/pom.xml
-version: 16.0.1
+📦 com.google.guava.guava
+artifact-id : guava
+group-id : com.google.guava
+pom-file : druid-handler/pom.xml
+version : ${druid.guava.version}
+version-property-name : druid.guava.version
+version-property-value : 16.0.1
+version-property-declare-path : druid-handler/pom.xml
 
-📦 com.google.guava.guava found
-pom: ./itests/qtest-druid/pom.xml
-version: 16.0.1
+📦 com.google.guava.guava
+artifact-id : guava
+group-id : com.google.guava
+pom-file : itests/qtest-druid/pom.xml
+version : ${druid.guava.version}
+version-property-name : druid.guava.version
+version-property-value : 16.0.1
+version-property-declare-path : druid-handler/pom.xml
 
-📦 com.google.guava.guava found
-pom: ./storage-api/pom.xml
-version: 22.0
-scope: test
+📦 com.google.guava.guava
+artifact-id : guava
+group-id : com.google.guava
+pom-file : pom.xml
+version : ${guava.version}
+version-property-name : guava.version
+version-property-value : 22.0
+version-property-declare-path : pom.xml
+
+📦 com.google.guava.guava
+artifact-id : guava
+group-id : com.google.guava
+pom-file : standalone-metastore/pom.xml
+version : ${guava.version}
+version-property-name : guava.version
+version-property-value : 22.0
+version-property-declare-path : pom.xml
+
+📦 com.google.guava.guava
+artifact-id : guava
+group-id : com.google.guava
+pom-file : storage-api/pom.xml
+version : ${guava.version}
+scope : test
+version-property-name : guava.version
+version-property-value : 22.0
+version-property-declare-path : pom.xml
 ```
