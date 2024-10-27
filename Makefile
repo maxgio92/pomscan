@@ -1,5 +1,5 @@
-.PHONY: build
-build:
+.PHONY: pomscan
+pomscan:
 	@go build -v .
 
 .PHONY: test
