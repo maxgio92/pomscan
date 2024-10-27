@@ -16,6 +16,6 @@ Scan POM files
 
 ### SEE ALSO
 
-* [pomscan dependency](pomscan_dependency.md)	 - Search an artifact through the direct dependencies across the project hierarchy.
+* [pomscan dependency](pomscan_dependency.md)	 - Search an artifact through the direct runtime dependencies across the project hierarchy.
 * [pomscan plugin](pomscan_plugin.md)	 - Search an artifact through the plugins across the project hierarchy.
 
