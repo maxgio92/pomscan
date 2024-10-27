@@ -63,3 +63,22 @@ func (list *ProjectList) SearchDirectDependency(artifactID, groupID string) ([]*
 
 	return results, nil
 }
+
+func (p *Project) SearchDepInDepMgmtSec(groupID, artifactID string) (*gopom.Dependency, error) {
+	if p.DependencyManagement == nil {
+		return nil, ErrDepMgmtEmpty
+	}
+	if p.DependencyManagement.Dependencies == nil {
+		return nil, ErrDepMgmtEmpty
+	}
+	for _, dep := range *p.DependencyManagement.Dependencies {
+		if (groupID == "" && dep.ArtifactID == artifactID) ||
+			(dep.ArtifactID == artifactID && dep.GroupID == groupID) {
+			{
+				return &dep, nil
+			}
+		}
+	}
+
+	return nil, ErrDepNotFound
+}
