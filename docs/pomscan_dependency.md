@@ -4,7 +4,7 @@ title: pomscan dependency
 
 ## pomscan dependency
 
-Search an artifact through the direct dependencies across the project hierarchy.
+Search an artifact through the direct runtime dependencies across the project hierarchy.
 
 ```
 pomscan dependency [flags]
@@ -16,6 +16,7 @@ pomscan dependency [flags]
   -a, --artifact-id string   Filter by artifact ID.
   -g, --group-id string      Filter by group ID. It must be combined with artifact ID.
   -h, --help                 help for dependency
+      --plugin               Whether to search an artifact through the plugin build dependencies.
       --version-only         Print only matches that have the version set. It supports properties.
 ```
 
