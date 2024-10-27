@@ -2,16 +2,25 @@
 
 **Scan POM files** for dependencies.
 
+## Installation
+
+```shell
+go install github.com/maxgio92/pomscan@latest
+```
+
 ## Usage
 
 ```
+Scan POM files
+
 Usage:
   pomscan [command]
 
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
-  dep         Get info about a dependency
+  dependency  Search an artifact through the direct dependencies across the project hierarchy.
   help        Help about any command
+  plugin      Search an artifact through the plugins across the project hierarchy.
 
 Flags:
       --debug                 Sets log level to debug
@@ -21,26 +30,7 @@ Flags:
 Use "pomscan [command] --help" for more information about a command.
 ```
 
-### `dep` command
-
-The `dep` commands returns info about a dependency, recursively scanning the POM files of a project.
-
-```
-Get info about a dependency
-
-Usage:
-  pomscan dep [flags]
-
-Flags:
-  -a, --artifact-id string   Filter by artifact ID.
-  -g, --group-id string      Filter by group ID. It must be combined with artifact ID.
-  -h, --help                 help for dep
-      --version-only         Print only matches that have the version set. It supports variables.
-
-Global Flags:
-      --debug                 Sets log level to debug
-  -p, --project-path string   Project path (default ".")
-```
+For command documentation please read the [CLI documentation](./docs).
 
 **Example**
 
