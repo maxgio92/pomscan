@@ -30,7 +30,7 @@ Flags:
 Use "pomscan [command] --help" for more information about a command.
 ```
 
-For command documentation please read the [CLI documentation](./docs/_index.md).
+For command documentation please read the [CLI reference](./docs/_index.md).
 
 **Example**
 
